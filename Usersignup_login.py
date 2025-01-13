@@ -2,13 +2,13 @@ import csv
 users = {}
 #to load data in csv file
 def read_csv():
+    read2_csv()
     try:
         with open('question and answers details.csv',mode ="r") as file:            
             csv_reader = csv.reader(file)
             next(csv_reader)
             score = 0
-
-            #name=input("Enter participant name")
+            email=input("Enter email")
             for row in csv_reader:
                 question_text = row[1]
                 optionA = row[2]
@@ -34,9 +34,25 @@ def read_csv():
                 else:
                     print("Invalid")
                 print(f"Your score is {score}") 
-        #print(f"Name :{name} and score :{score}")  
+        print(f"Email :{email} and score :{score}")  
     except FileNotFoundError:
-        print("File not found")    
+        print("File not found")
+    write_csv("Email and score.csv",[[email,score]])        
+def read2_csv():
+    data =[]
+    try:
+        with open('Email and score.csv',mode='r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                data.append(row)
+    except FileNotFoundError:
+        print("File not found") 
+        return data
+    #to write the data in csv file
+def write_csv(filename,data):
+    with open(filename,mode = 'w',newline = '') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)                   
 def load_csv():
     try:
         with open("email&password.csv",mode="r") as file:
@@ -62,7 +78,7 @@ def signup():
         return
     password = input("Enter password")
     users[email] = password
-    write_csv("email&password.csv",[[email,password]])
+    write_csv("email&password.csv",[[email,password]])#to store the email and password the user adds
     print("User registered successfully!")
 #function for user login
 def login():
