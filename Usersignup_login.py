@@ -26,6 +26,7 @@ def signup():
         return
     password = input("Enter password")
     users[email] = password
+    write_csv("email&password.csv",[[email,password]])
     print("User registered successfully!")
 #function for user login
 def login():
@@ -57,4 +58,4 @@ if __name__ =="__main__":
     main() 
 #calling functions                   
 #load_csv()
-write_csv(filename='email&password.csv',data=[['email','password'],['moksha123@gmail.com','moksha09']])
+#write_csv(filename='email&password.csv',data=[['email','password'],['moksha123@gmail.com','moksha09']])
