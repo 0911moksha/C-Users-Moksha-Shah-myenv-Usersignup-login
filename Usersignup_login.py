@@ -97,5 +97,4 @@ def main():
 if __name__ =="__main__":
     main() 
 #calling functions                   
-#load_csv()
 #write_csv(filename='email&password.csv',data=[['email','password'],['moksha123@gmail.com','moksha09']])
