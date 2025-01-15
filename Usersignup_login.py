@@ -1,4 +1,5 @@
 import csv
+import re
 users = {}
 def read_csv():
     try:
@@ -21,16 +22,18 @@ def read_csv():
                 input_answer = input("Enter options[A/B/C/D]").upper()
                 for option in question_text:
                     if option in ['A','B','C','D']:
-                        return True
+                        return True 
                 answer = row[6]
                 print(f"Correct answer is:")
                 if not option == answer:
                     print(answer)
                 if input_answer == answer:
-                        score+=1
-                        print("The answer is correct")
+                    score+=1
+                    print("The answer is correct")
                 else:
-                    print("Invalid")
+                    print("Incorrect answer")
+                if not input_answer in ['A','B','C','D']:
+                    print("Invalid")                
                 print(f"Your score is {score}") 
         print(f"Email :{email} and score :{score}")
         write_csv("Email and score.csv",[[email,score]])          
@@ -66,7 +69,18 @@ def load_csv():
 def write_csv(filename,data):
         with open(filename,mode="a",newline ="") as file:
             writer = csv.writer(file)
-            writer.writerows(data)           
+            writer.writerows(data)
+#to check the validation of the password
+def validate_password(password):
+    if len(password) < 8:
+        return False
+    if not re.search(r'[A-Z]',password):
+        return False
+    if not re.search(r'\d',password):
+        return False
+    if not re.search(r'[#_@%]',password):
+        return False
+    return True                       
 def signup():
     email = input("Enter email:")
     #to check if the email exists or not
@@ -74,8 +88,11 @@ def signup():
         print("Email already exists")
         return
     password = input("Enter password")
-    users[email]=password
-    print("User registered successfully")
+    if not validate_password(password):
+        print("Password must be of 8 characters,contains atleast one digit,one uppercase letter and a special character")
+    else:
+        print("Registered successfully")
+        write_csv("email&password.csv",[[email,password]])#adds the multiple email and password to the csv file
 #function for user login
 def login():
     email = input("Enter email:")
@@ -85,9 +102,7 @@ def login():
     password = input("Enter password")
     if users[email]==password:
         print("Login successful!")
-        write_csv("email&password.csv",[[email,password]])#adds the multiple email and password to the csv file
         read_csv()
-        
     else:
         print("Incorrect password")
 #main program
