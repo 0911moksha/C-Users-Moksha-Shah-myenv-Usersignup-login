@@ -1,6 +1,10 @@
 import csv
 import re
+import bcrypt
+import getpass
+
 users = {}
+
 def read_csv():
     try:
         with open('question and answers details.csv',mode ="r") as file:            
@@ -87,43 +91,53 @@ def signup():
     if email in users:
         print("Email already exists")
         return
-    password = input("Enter password")
+    password = getpass.getpass("Enter password:").strip()
     if not validate_password(password):
         print("Password must be of 8 characters,contains atleast one digit,one uppercase letter and a special character")
     else:
+        hashed_password = bcrypt.hashpw(password.encode("utf-8"),bcrypt.gensalt())
         print("Registered successfully")
-        write_csv("email&password.csv",[[email,password]])#adds the multiple email and password to the csv file
+        write_csv("email&password.csv",[[email,hashed_password.decode("utf-8")]])#adds the multiple email and password to the csv file
 #function for user login
 def login():
     email = input("Enter email:")
     if not email in users:
         print("Email not found")
-        return
-    password = input("Enter password")
-    if users[email]==password:
+        return   
+    password = getpass.getpass("Enter password:").strip()
+    stored_hashed_password = users[email].encode("utf-8")
+    if bcrypt.checkpw(password.encode("utf-8"),stored_hashed_password):
+        #if users[email]==password:
+        print("Passwords match")
         print("Login successful!")
         read_csv()
     else:
         print("Incorrect password")
 #main program
 def main():
-    load_csv()
     read2_csv()
     while True:
-        print("1.User signup")
-        print("2.User login")
-        print("3.Exit") 
-        choice = input("Enter your choice")
-        if choice == "1":
+         print("1.User signup")
+         print("2.User login")
+         print("3.Exit") 
+         choice = input("Enter your choice")
+         if choice == "1":
+            load_csv()
             signup()
-        elif choice == "2":
+         elif choice == "2":
+            load_csv()
             login()
-        elif choice == "3":
+         elif choice == "3":
             break
-        else:
+         else:
             print("Invalid choice")
 if __name__=="__main__":
-    main()              
+    main()                 
+
+
+
+
+
 
 
 
